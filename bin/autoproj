@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+
+HOME=/proj
+
+case $1 in
+    "-v"|"--version")
+        echo "version:2.0.0"
+    ;;
+    "-d"|"--debug")
+        sh $HOME/auto_shell -d
+    ;;
+    "-h"|"--help")
+        cat $HOME/README
+    ;;
+    "-r"|"--replace")
+        # sh $HOME/auto_shell -r
+        echo "test -r"
+    ;;
+    "-u"|"--update")
+        sh $HOME/auto_shell
+    ;;
+     *)
+        head -n 5 $HOME/README
+    ;;
+esac
