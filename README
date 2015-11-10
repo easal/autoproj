@@ -1,0 +1,14 @@
+Welcome! now u can do :
+        -u or --upeate          update the web, now!
+        -v or --version         echo the version
+        -d or --debug           open tomcat with debug mode
+        -r or --replace         rollback to the last version
+
+------------------------------------------------------------
+For example:
+
+autoproj -r 2.1                 u will rollback to the v2.1
+
+-----------------------------------------------------------
+If you see something like E00X,please call 189xxxxxxxx
+
