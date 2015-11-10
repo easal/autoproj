@@ -1,0 +1,79 @@
+#!/bin/bash
+# by wangx 2015.11.5
+
+##Declear
+HOME=/proj
+PRO_DIR=$HOME/learn
+MVN_DIR=`/usr/bin/which mvn`
+FTP_DIR=/tmp
+TOMCAT_DIR=/run/apache-tomcat-7.0.63
+
+#set -x
+##git the learning.war
+echo "Hello HanJa!"
+echo "Gitting clone please wait !"
+$HOME/git_package >/dev/null 2>&1
+if [ $? -eq 0 ]
+    then
+        echo "git done success!"
+    else 
+        echo "Error!(E001)"
+        exit
+fi
+
+##mvn
+echo "===================="
+echo "Now begin mvn!"
+cd $PRO_DIR;`$MVN_DIR clean install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true > $PRO_DIR/access.log`
+cat $PRO_DIR/access.log >>$HOME/logs/access.log
+`tail -n 14 $PRO_DIR/access.log > /tmp/proj.tmp`
+#sed 's/-//' /tmp/proj.tmp
+cat /tmp/proj.tmp;rm -rf /tmp/proj.tmp
+
+##Rename the learning.war
+if [ -a "$PRO_DIR/o2o-learning-web/target/learning.war" ]
+    then 
+        echo "The learning.war is here!"
+    else
+        echo "Something wrong with the proj!(E002) "
+        exit
+fi
+cp $PRO_DIR/o2o-learning-web/target/learning.war $FTP_DIR
+DATE=`date +%Y%m%d`
+N=`cat $HOME/n.txt`
+`mv $FTP_DIR/learning.war $FTP_DIR/learning_"$N"_A_"$DATE"_1_"$DATE".war`
+echo "learning_"$N"_A_"$DATE"_1_"$DATE".war" >>$HOME/reco
+N=`echo "scale=1;$N+0.1"|bc`
+echo $N>$HOME/n.txt
+
+##Release
+TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
+if [ -z $TOMCAT_PID ]
+    then
+        echo "killed the tomcat pid!"
+    else
+        kill -9 $TOMCAT_PID >/dev/null
+fi
+rm -rf $TOMCAT_DIR/webapps/ROOT/*
+cp $PRO_DIR/o2o-learning-web/target/learning.war $TOMCAT_DIR/webapps/ROOT
+cd $TOMCAT_DIR/webapps/ROOT;/usr/bin/unzip learning.war >/dev/null
+rm -rf $TOMCAT_DIR/webapps/ROOT/learning.war
+
+echo "===================="
+echo "Starting tomcat!"
+if [ "$1"x = "-d"x ]
+    then
+        sh $TOMCAT_DIR/bin/debug.sh >/dev/null
+    else
+        sh $TOMCAT_DIR/bin/startup.sh >/dev/null
+fi
+TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
+if [ -z $TOMCAT_PID ]
+    then
+        echo "Starting error!(E003)"
+    else
+        echo "Starting success!"
+fi
+
+##Clean
+rm -rf $HOME/learn

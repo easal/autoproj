@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+##  by wangx 2015.11.5
+
+# git the learn.war
+set timeout 5
+spawn /root/bin/git clone http://yangzhi@192.168.18.203/o2o/learning.git /proj/learn
+expect "192.168.18.203':"
+send "passw0rd\r"
+interact
