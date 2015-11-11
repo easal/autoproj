@@ -1,26 +1,35 @@
 #!/bin/bash
 #
 
+##Declare
 HOME=/proj
+
+##Function
+. $HOME/scprit/fun_shell
 
 case $1 in
     "-v"|"--version")
         echo "version:2.0.0"
     ;;
     "-d"|"--debug")
-        sh $HOME/auto_shell -d
+        sh $HOME/scprit/auto_shell -d
     ;;
     "-h"|"--help")
         cat $HOME/README
     ;;
     "-r"|"--replace")
         # sh $HOME/auto_shell -r
-        echo "test -r"
+        #f_rsss_tomcat $2
+        #f_test $2
+        f_rollback $2
     ;;
     "-u"|"--update")
-        sh $HOME/auto_shell
+        sh $HOME/scprit/auto_shell
+    ;;
+    "-s"|"--show")
+        f_show_ver
     ;;
      *)
-        head -n 5 $HOME/README
+        head -n 6 $HOME/README
     ;;
 esac

@@ -8,11 +8,14 @@ MVN_DIR=`/usr/bin/which mvn`
 FTP_DIR=/tmp
 TOMCAT_DIR=/run/apache-tomcat-7.0.63
 
+##Function
+. $HOME/scprit/fun_shell
+
 #set -x
 ##git the learning.war
 echo "Hello HanJa!"
 echo "Gitting clone please wait !"
-$HOME/git_package >/dev/null 2>&1
+$HOME/scprit/git_package >/dev/null 2>&1
 if [ $? -eq 0 ]
     then
         echo "git done success!"
@@ -40,20 +43,15 @@ if [ -a "$PRO_DIR/o2o-learning-web/target/learning.war" ]
 fi
 cp $PRO_DIR/o2o-learning-web/target/learning.war $FTP_DIR
 DATE=`date +%Y%m%d`
-N=`cat $HOME/n.txt`
+N=`cat $HOME/conf/n.txt`
 `mv $FTP_DIR/learning.war $FTP_DIR/learning_"$N"_A_"$DATE"_1_"$DATE".war`
-echo "learning_"$N"_A_"$DATE"_1_"$DATE".war" >>$HOME/reco
+echo "learning_"$N"_A_"$DATE"_1_"$DATE".war" >>$HOME/conf/reco
 N=`echo "scale=1;$N+0.1"|bc`
-echo $N>$HOME/n.txt
+echo $N>$HOME/conf/n.txt
 
 ##Release
-TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
-if [ -z $TOMCAT_PID ]
-    then
-        echo "killed the tomcat pid!"
-    else
-        kill -9 $TOMCAT_PID >/dev/null
-fi
+f_rsss_tomcat 2
+
 rm -rf $TOMCAT_DIR/webapps/ROOT/*
 cp $PRO_DIR/o2o-learning-web/target/learning.war $TOMCAT_DIR/webapps/ROOT
 cd $TOMCAT_DIR/webapps/ROOT;/usr/bin/unzip learning.war >/dev/null

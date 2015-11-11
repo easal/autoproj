@@ -1,0 +1,105 @@
+#!/bin/bash
+
+HOME=/proj
+FTP_DIR=/tmp
+TOMCAT_DIR=/run/apache-tomcat-7.0.63
+
+f_show_ver()
+{
+    echo "The current version is :"
+    tail -n 1 $HOME/conf/reco
+    echo "======================================"
+    echo "The last version is :"
+    tail -n 2 $HOME/conf/reco | head -n 1
+    return 0;
+}
+
+f_rsss_tomcat()
+{
+    case $1 in
+        1)
+            echo "1"
+            ##start
+            sh $TOMCAT_DIR/bin/startup.sh >/dev/null
+            TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
+            if [ ! -z $TOMCAT_PID ]
+                then
+                    echo "start tomcat ok!"
+                else
+                    echo "start tomcat field!"
+            fi
+        ;;
+        2)
+            echo "2"
+            ##shutdown
+            TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
+            if [ ! -z $TOMCAT_PID ]
+                then
+                    kill -9 $TOMCAT_PID >/dev/null   
+                    echo "shutdown tomcat ok!"
+                else
+                    echo "shutdown tomcat ok!"
+            fi
+        ;;
+        3)
+            echo "3"
+            ##restart
+            f_rsss_tomcat 2
+            f_rsss_tomcat 1
+        ;;
+        4)
+            echo "4"
+            ##status
+            TOMCAT_PID=`ps -ef | grep java | grep tomcat | awk '{print $2}'`
+            if [ ! -z $TOMCAT_PID ]
+                then
+                    echo "Tomcat started ! PID $TOMCAT_PID"
+                else
+                    echo "Tomcat stoped !"
+            fi
+        ;;
+        *)
+            echo "any"
+        ;;
+    esac
+    return 0;
+}
+
+#f_test()
+#{
+#    case $1 in
+#        1)
+#            echo "1"
+#        ;;
+#        2)
+#            echo "2"
+#        ;;
+#        3)
+#            f_test 1
+#            f_test 2
+#        ;;
+#       *)
+#            echo "any"
+#        ;;
+#    esac
+#}
+
+f_rollback()
+{
+    echo $1
+    VER=`cat $HOME/conf/reco | grep _$1_`
+    echo $VER
+    if [ ! -z $VER ]
+        then
+            echo "you"
+            f_rsss_tomcat 2
+            rm -rf $TOMCAT_DIR/webapps/ROOT/*
+            cp $FTP_DIR/$VER $TOMCAT_DIR/webapps/ROOT
+            cd $TOMCAT_DIR/webapps/ROOT;/usr/bin/unzip $VER >/dev/null
+            rm -rf $TOMCAT_DIR/webapps/ROOT/$VER
+            f_rsss_tomcat 1
+        else
+            echo "Version number does not exist !"
+    fi
+    return 0;
+}

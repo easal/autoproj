@@ -1,8 +1,9 @@
 Welcome! now u can do :
-        -u or --upeate          update the web, now!
+        -u or --update          update the web, now!
         -v or --version         echo the version
         -d or --debug           open tomcat with debug mode
         -r or --replace         rollback to the last version
+        -s or --show            show the web version
 
 ------------------------------------------------------------
 For example:
