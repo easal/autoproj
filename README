@@ -4,6 +4,7 @@ Welcome! now u can do :
         -d or --debug           open tomcat with debug mode
         -r or --replace         rollback to the last version
         -s or --show            show the web version
+        -a or --all             display all versions
 
 ------------------------------------------------------------
 For example:

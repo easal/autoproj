@@ -29,7 +29,10 @@ case $1 in
     "-s"|"--show")
         f_show_ver
     ;;
+    "-a"|"--all")
+        cat $HOME/conf/reco
+    ;;
      *)
-        head -n 6 $HOME/README
+        head -n 7 $HOME/README
     ;;
 esac

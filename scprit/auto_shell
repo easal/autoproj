@@ -5,7 +5,7 @@
 HOME=/proj
 PRO_DIR=$HOME/learn
 MVN_DIR=`/usr/bin/which mvn`
-FTP_DIR=/tmp
+FTP_DIR=/warehouse
 TOMCAT_DIR=/run/apache-tomcat-7.0.63
 
 ##Function
@@ -46,6 +46,7 @@ DATE=`date +%Y%m%d`
 N=`cat $HOME/conf/n.txt`
 `mv $FTP_DIR/learning.war $FTP_DIR/learning_"$N"_A_"$DATE"_1_"$DATE".war`
 echo "learning_"$N"_A_"$DATE"_1_"$DATE".war" >>$HOME/conf/reco
+echo "learning_"$N"_A_"$DATE"_1_"$DATE".war" >>$HOME/conf/reco1
 N=`echo "scale=1;$N+0.1"|bc`
 echo $N>$HOME/conf/n.txt
 
